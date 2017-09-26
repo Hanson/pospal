@@ -42,7 +42,7 @@ $result = $ticket->query($sn);
 #### 分页查询所有单据
 
 ```php
-$result = $ticket->ticket->paginate([
+$result = $ticket->paginate([
    'startTime' => '2017-09-25 01:59:59',
    'endTime' => '2017-09-25 23:59:59',
 ]);
