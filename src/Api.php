@@ -40,11 +40,11 @@ class Api extends AbstractAPI
 
         $response = $this->getHttp()->json($this->url . $path, $params);
 
-        $result =  (string) $response->getBody();
+        $result = json_decode((string)$response->getBody(), true);
 
         $this->checkAndThrow($result);
 
-        return json_decode($result, true);
+        return $result;
     }
 
     /**
