@@ -36,6 +36,8 @@ class Api extends AbstractAPI
     {
         $params['appId'] = $this->appId;
 
+//        print_r($params);
+
         $this->signature = strtoupper(md5($this->appKey.json_encode($params)));
 
         $response = $this->getHttp()->json($this->url . $path, $params);
