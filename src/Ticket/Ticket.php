@@ -40,36 +40,39 @@ class Ticket extends Api
      *
      * @param $params
      * @return array
+     * @throws \Hanson\Pospal\HttpException
      */
     public function paginate($params = [])
     {
-        $params = $params ?: [
-            'startTime' => Carbon::yesterday()->toDateTimeString(),
-            'endTime' => Carbon::yesterday()->endOfDay()->toDateTimeString(),
-        ];
+        $params['startTime'] = $params['startTime'] ?? Carbon::yesterday()->toDateTimeString();
+        $params['endTime'] = $params['endTime'] ?? Carbon::yesterday()->endOfDay()->toDateTimeString();
 
         return $this->request(self::QUERY_TICKET_PAGES_API, $params);
     }
 
     /**
      * 获取全部订单
-     * @todo 奇怪的签名错误
      *
      * @param array $params
-     * @return array
+     * @param \Closure $callback
+     * @return void
+     * @throws \Hanson\Pospal\HttpException
      */
-    public function all($params = [])
+    public function all($params = [], \Closure $callback)
     {
-        $result = [];
+        $params['postBackParameter'] = null;
 
         while (true) {
             $tickets = $this->paginate($params);
 
-            if ($tickets['status'] === 'success' && $tickets['data']['pageSize'] === 100) {
-                $result[] = array_merge($result, $tickets['data']['result']);
-                $params['postBackParameter'] = $tickets['data']['postBackParameter'];
+            $callback($tickets['data']['result']);
+
+            if ($tickets['status'] === 'success' && count($tickets['data']['result']) === $tickets['data']['pageSize']) {
+
+                $params['postBackParameter'] = ($tickets['data']['postBackParameter']);
+
             } else {
-                return $result;
+                return;
             }
         }
     }

@@ -47,3 +47,16 @@ $result = $ticket->paginate([
    'endTime' => '2017-09-25 23:59:59',
 ]);
 ```
+
+#### 查询所有单据
+
+此 API 需要传入匿名函数
+
+```php
+// 默认查询昨天
+$result = $ticket->all([], function ($tickets) {
+    foreach($tickets as $ticket) {
+        echo $ticket['sn'];
+    }
+});
+```
